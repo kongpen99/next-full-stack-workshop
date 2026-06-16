@@ -1,13 +1,21 @@
-@import "tailwindcss";
+  @import "tailwindcss";
 
-*{
-  font-family:'Prompt';
-}
-
-
-  .sidebar-menu {
-   @apply flex flex-col gap-2;
+  *{
+    font-family:'Prompt';
   }
- .sidebar-menu- li {
-  @apply flex items-center gap-2  text-xl;
- }
+
+    .sidebar-menu {
+    @apply flex flex-col gap-2;
+    }
+
+  .sidebar-menu- li {
+    @apply flex items-center gap-2  text-xl;
+  }
+
+  .btn-primary {
+    @apply px-4 py-2 bg-blue-500 text-white rounded-md;
+  }
+
+  .input {
+    @apply w-full py-2 border border-gray-400 rounded-md bg-white;
+  }
