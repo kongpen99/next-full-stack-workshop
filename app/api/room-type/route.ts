@@ -19,9 +19,15 @@ export async function GET(){
     try {
         
         return NextResponse.json(
-        await prisma.roomType.findMany()
+        await prisma.roomType.findMany({
+                orderBy: {
+                    createdAt: 'desc'
+                },
+                where: {
+                    status: 'active'
+                }
+            })
         )
-
     } catch (error) {
         return NextResponse.json(
             { error: (error as Error).message },

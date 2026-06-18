@@ -30,7 +30,7 @@ export async function GET(
             { status: 500 });
     }
 }
-
+// PUT /api/room-type/:id  --แก้ไขข้อมูลห้องพักประเภทเดียว
 export async function PUT(
     req: Request,
     { params }: {
@@ -60,6 +60,7 @@ export async function PUT(
             { status: 500 });
     }
 }
+// DELETE /api/room-type/:id  --ลบห้องพักประเภทเดียวโดยการเปลี่ยนสถานะเป็น inactive
 export async function DELETE(    
     req: Request,
     { params }: {
