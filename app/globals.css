@@ -12,18 +12,33 @@
     @apply flex flex-col gap-2;
     }
 
-  .sidebar-menu- li {
+  .sidebar-menu li {
     @apply flex items-center gap-2  text-xl;
   }
 
   .btn-primary {
-    @apply px-4 py-2 bg-blue-500 text-white rounded-md;
+    @apply bg-blue-500 text-white px-4 py-2 rounded-md;
   }
 
   .input {
-    @apply w-full py-2 border border-gray-400 rounded-md bg-white;
+    @apply w-full p-2 border border-gray-400 rounded-md bg-white;
   }
 
+  .input-modal {
+    @apply p-2 w-full border border-gray-600 rounded-md bg-white shadow-md;
+  } 
+
+  .table {
+    @apply w-full shadow-lg  border border-gray-200;
+  }
+  .table th{
+    @apply bg-gray-400 p-3;
+  }
+  .table td {
+    @apply  p-3 bg-gray-50  border-gray-400;
+  }
+
+  
   @theme inline {
     --font-heading:var(--font-sans);
     --font-sans:var(--font-sans);
