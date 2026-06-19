@@ -72,8 +72,8 @@ export default function RoomTypePage() {
         try {
             const buttonConfirm = await Swal.fire({
                 icon: 'question',
-                title: 'Are you sure?',
-                text: 'delete',
+                title: 'คุณต้องการลบรายการนี้หรือไม่?',
+                text: 'ลบแล้วจะไม่สามารถกู้คืนได้',
                 showCancelButton: true,
                 showConfirmButton: true
             })
@@ -102,7 +102,7 @@ export default function RoomTypePage() {
                 เพิ่มรายการ
             </Button>
 
-            <table className="table mt-2">
+            <table className="table mt-2 text-center">
                 <thead>
                     <tr>
                         <th>ชื่อประเภทห้องพัก</th>
@@ -142,7 +142,7 @@ export default function RoomTypePage() {
 
             <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} title='เพิ่มประเภทห้องพัก'>
                 <div>
-                    <form onSubmit={handleSave}>
+                    <form className="text-left" onSubmit={handleSave}>
                         <div className="mb-3">
                             <label>ชื่อประเภทห้องพัก</label>
                             <input type="text" className="input-modal" value={name}

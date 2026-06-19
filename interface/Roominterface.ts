@@ -1,8 +1,18 @@
-export default interface Roominterface {
+import { BookingInterface } from './BookingInterface';
+import RoomTypeInterface from './RoomTypeInterface';
+
+export interface RoomInterface {
     id: string;
     name: string;
-    price: number;
-    remarks?: string;
+    towerName: string;
+    totalLevel: number;
+    totalRoom: number;
+    roomTypeId: string;
+    roomType: RoomTypeInterface;
+    remark: string;
+    status: string;
+    statusEmpty: string;
     createdAt: Date;
     updatedAt: Date;
+    bookings: BookingInterface[];
 }
