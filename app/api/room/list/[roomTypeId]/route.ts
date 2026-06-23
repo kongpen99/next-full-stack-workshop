@@ -1,6 +1,9 @@
 // GET api/room/list/[roomTypeId]
+
 import { prisma } from "@/libs/prisma";
 import { NextResponse } from "next/server";
+
+// GET /api/room/list/[roomTypeId] - ดึงห้องพักตามประเภทห้อง
 
 export async function GET (
     req: Request,
@@ -20,7 +23,7 @@ export async function GET (
                 status: 'active',
                 roomTypeId: roomTypeId
             }
-        });
+        })
         return NextResponse.json(rooms);
         
     } catch (error) {

@@ -10,23 +10,26 @@ export default function Sidebar() {
                 <div className="text-xl mt-2">โปรแกรมบริหารจัดการอหอพักพาร์ตเมนต์</div>
             </div>
             <nav className="p-5"></nav>
-
             <ul className="sidebar-menu">
                 <li>
                     <Link href="/home/apartment" className="flex items-center p-2 text-base font-normal text-gray-300 rounded-lg hover:bg-gray-100">
-                        <i className="fas fa-home"></i>
+                        <i className="fas fa-home w-7"></i>
                         <span className="ml-3">ข้อมูลอพาร์ตเมนต์</span>
                     </Link>
                 </li>
                 <li>
                     <Link href="/home/room-type" className="flex items-center p-2 text-base font-normal text-gray-300 rounded-lg hover:bg-gray-100">
-                        <i className="fas solid fa-bed"></i>
+                        <i className="fas solid fa-bed w-7"></i>
                         <span className="ml-3">ประเภทห้องพัก</span>
                     </Link>
                 </li>
+                    <li>
+                        <Link href="/home/room" className="flex items-center p-2 text-base font-normal text-gray-300 rounded-lg hover:bg-gray-100">
+                            <i className="fas solid fa-box w-7"></i>
+                            <span className="ml-3">ห้องพัก</span>
+                        </Link>
+                    </li>
             </ul>
-
-            
         </div>
     )
 }

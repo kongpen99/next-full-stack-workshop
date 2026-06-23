@@ -41,7 +41,7 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable}  antialiased`}>
         <div className="flex">
           <Sidebar />
-          <main className="w-full p-5 bg-slate-300">
+          <main className="w-full p-5 bg-slate-300 h-screen overflow-y-auto">
               {children}
           </main>
         </div>
@@ -49,3 +49,4 @@ export default function RootLayout({
     </html>
   );
 }
+ 
