@@ -13,41 +13,41 @@ datasource db {
 }
 
 model Apartment {
-  id          String   @id @default(cuid())
-  name        String
-  address     String
-  phone       String
-  email       String?
-  lineId      String?
-  taxCode     String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        String   @id @default(cuid())
+  name      String
+  address   String
+  phone     String
+  email     String?
+  lineId    String?
+  taxCode   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
 }
 
 model RoomType {
-  id          String   @id @default(cuid())
-  name        String
-  price       Int
-  remark      String?
-  status      String @default("active") // เพิ่มสถานะเพื่อระบุว่า RoomType นี้ยังใช้งานอยู่หรือไม่
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  rooms       Room[]
+  id        String   @id @default(cuid())
+  name      String
+  price     Int
+  remark    String?
+  status    String   @default("active") // active, inactive
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  rooms     Room[]
 }
 
 model Room {
-  id          String   @id @default(cuid())
-  name        String
-  towerName   String
-  totalLevel  Int
-  totalRoom   Int
-  roomTypeId  String
-  roomType    RoomType @relation(fields: [roomTypeId], references: [id])
-  remark      String?
-  status      String @default("active") // เพิ่มสถานะเพื่อระบุว่า RoomType นี้ยังใช้งานอยู่หรือไม่
-  statusEmpty String @default("empty") // เพิ่มสถานะเพื่อระบุว่า RoomType นี้ยังใช้งานอยู่หรือไม่
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id            String         @id @default(cuid())
+  name          String
+  towerName     String
+  totalLevel    Int
+  totalRoom     Int
+  roomTypeId    String
+  roomType      RoomType       @relation(fields: [roomTypeId], references: [id])
+  remark        String?
+  status        String         @default("active") // active, inactive
+  statusEmpty   String         @default("empty") // empty, accupied
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
 }
 
 
