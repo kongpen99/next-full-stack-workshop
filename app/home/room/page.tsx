@@ -134,19 +134,21 @@ export default function Room() {
                 {rooms.map(room => (
                     <div key={room.id}
                     className={`p-2 rounded-md shadow-lg border border-gray-400
-                    ${room.statusEmpty == 'empty' ? 'bg-green-100' : 'bg-red-100'}`}>
+                    ${room.status == 'active' ? 'bg-green-100' : 'bg-red-100'}`}>
                         <div className="text-xl font-semibold">{room.name}</div>
                         <div>{room.roomType.name}</div>
                         <div>
                         ค่าเช่า:
+
                         <span className="font-semibold">
                             {room.roomType.price.toLocaleString()}
                         </span>
                     </div>
                     <div className="flex gap-1 mt-2">
+                        {room.status == 'active' ? (
                         <Button variant='destructive' onClick={async () => {
                             const buttonConfirm = await Swal.fire({
-                                icon: 'warning',
+                                icon: 'question',
                                 title: 'ยืนยันการลบ',
                                 text: 'คุณต้องการลบห้องพักนี้หรือไม่?',
                                 showCancelButton: true,
@@ -163,6 +165,27 @@ export default function Room() {
                             <i className="fa fa-trash mr-2"></i>
                             ลบ
                         </Button>
+                        ) : (
+                            <Button variant='default' onClick={async () => {
+                                const buttonConfirm = await Swal.fire({
+                                    icon: 'question',
+                                    title: 'ยืนยันการเปิดใช้งาน',
+                                    text: 'คุณต้องการเปิดใช้งานห้องพักนี้หรือไม่?',
+                                    showCancelButton: true,
+                                    showConfirmButton: true,
+                                });
+
+                                if (buttonConfirm.isConfirmed) {
+                                    // เปิดใช้งานห้องพัก
+                                    await axios.put('/api/room/' + room.id);
+                                    // รีเฟรชหน้า
+                                    fetchData();
+                                }
+                            }}>
+                                <i className="fa fa-undo mr-2"></i>
+                                เปิดใช้งาน
+                            </Button>
+                        )}
                   </div>
                     </div>
                 ))}

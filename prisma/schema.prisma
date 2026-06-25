@@ -48,6 +48,33 @@ model Room {
   statusEmpty   String         @default("empty") // empty, accupied
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
+  bookings      Booking[]
 }
+model Booking {
+    id            String         @id @default(cuid())
+    customerName  String
+    customerPhone String
+    customerAddress String?
+    cardId        String
+    gender        String
+    roomId        String
+    room          Room           @relation(fields: [roomId], references: [id])
+    remark        String?
+    status        String         @default("active") // pending, approved, rejected
+    createdAt     DateTime       @default(now())
+    updatedAt     DateTime       @updatedAt
+    stayAt        DateTime
+    stayTo        DateTime?
+    deposit       Int            @default(0)
+}
+
+
+
+
+
+    
+  
+    
+  
 
 

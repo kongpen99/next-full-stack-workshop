@@ -1,4 +1,3 @@
-
 // DELETE สำหรับลบห้อง
 // DELETE /api/room/[id]
 
@@ -7,8 +6,9 @@ import { NextResponse } from "next/server";
 
 export async function DELETE(
     req: Request,
-    {params }: { 
-        params: Promise<{ id: string }> }
+    { params }: {
+        params: Promise<{ id: string }>
+    }
 ) {
     try {
         const { id } = await params;
@@ -20,8 +20,29 @@ export async function DELETE(
                 status: 'inactive'
             }
         })
-        
+
         return NextResponse.json({});
+    } catch (error) {
+        return NextResponse.json(
+            { error: (error as Error).message },
+            { status: 500 }
+        )
+    }
+}
+export async function PUT(rqe: Request, { params }: { params: Promise<{ id: string }> }) {
+    try {
+       
+        const { id } = await params;
+        const room = await prisma.room.update({
+            where: {
+                id : id
+            },
+            data: {
+                status: 'active'
+
+            }
+        })
+        return NextResponse.json(room);
     } catch (error) {
         return NextResponse.json(
             { error: (error as Error).message },
