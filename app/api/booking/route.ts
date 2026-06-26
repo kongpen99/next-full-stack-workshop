@@ -1,6 +1,6 @@
-// เขียน api สำหรับ booking room
+// เขียน api สำหรับการจองห้องพัก booking room โดยรับข้อมูลจาก client
 //  POST /api/booking/route.ts
-
+ 
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/libs/prisma";
@@ -16,11 +16,9 @@ export  async function POST (request: Request) {
             cardId: z.string(),
             gender: z.string(),
             roomId: z.number(),
-            remark: z.string(),
-            deposit: z.number(),
-
+            remark: z.string().optional(),
+            deposit: z.number().default(0)
         });
-
         const{
             customerName,
             customerPhone,
@@ -31,10 +29,40 @@ export  async function POST (request: Request) {
             remark,
             deposit
         } = schema.parse(body);
-        
+
+        const booking = await prisma.booking.create({
+            data: {
+                customerName: customerName,
+                customerPhone: customerPhone,
+                customerAddress: customerAddress,
+                cardId: cardId,
+                gender: gender,
+                roomId: roomId,
+                remark: remark,
+                deposit: deposit,
+                stayAT: new Date(),
+                stayTo: new Date(),
+                status: 'active'
+            }
+        });
+
+
+        //  update statusEmpty of room
+        await prisma.room.update({
+            where: {
+                id: roomId.toString()
+            },
+            data: {
+                statusEmpty: 'no'
+            }
+        });
+
+        return NextResponse.json(booking);
     } catch (error) {
-        
+        return NextResponse.json(
+            { error:(error as Error) },
+            { status: 500 }
+        );
     }
-    
 }
 
