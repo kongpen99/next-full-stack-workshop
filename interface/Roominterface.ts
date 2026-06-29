@@ -1,4 +1,6 @@
-import RoomTypeInterface from './RoomTypeInterface';
+import { BookingInterface } from './BookingInterface';
+import  RoomTypeInterface  from './RoomTypeInterface';
+
 
 export interface RoomInterface {
     id: string;
@@ -13,5 +15,5 @@ export interface RoomInterface {
     statusEmpty: string;
     createdAt: Date;
     updatedAt: Date;
-    
-}
+    bookings: BookingInterface[];
+} 

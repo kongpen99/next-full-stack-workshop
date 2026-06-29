@@ -17,7 +17,10 @@ export async function GET (
                 name: 'asc'
             },
             include: {
-                roomType: true
+                roomType: true,
+             // ดึงข้อมูลการจองทั้งหมดของห้องนี้
+                bookings: true
+            
             },
             where: {
                

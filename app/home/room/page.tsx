@@ -1,14 +1,15 @@
  // เขียน Code ในหน้าMenu Room (ห้องพัก Sidebar)
 
-'use client';
+    'use client';
 
-import { useState, useEffect } from 'react';
-import Swal from 'sweetalert2';
-import axios from 'axios';
-import { RoomInterface } from '@/interface/RoomInterface';
-import RoomTypeInterface from '@/interface/RoomTypeInterface';
-import Button from '@/components/button';
-import Modal from '@/components/ui/modal';
+    import { useState, useEffect } from 'react';
+    import Swal from 'sweetalert2';
+    import axios from 'axios';
+    import { RoomInterface } from '@/interface/RoomInterface';
+    import RoomTypeInterface from '@/interface/RoomTypeInterface';
+    import Button from '@/components/button';
+    import Modal from '@/components/ui/modal';
+    import dayjs from 'dayjs';
 
     // หน้าห้องพัก
 export default function Room() {
@@ -22,6 +23,7 @@ export default function Room() {
     const [towerName,setTowerName] = useState('');
     const [totalLevel,setTotalLevel] = useState(0);
 
+    
     // booking ฟังก์ชัน
     // การจองห้องพัก
 
@@ -34,7 +36,7 @@ export default function Room() {
     const [cardId, setCardId] = useState('');
     const [gender, setGender] = useState('');
     const [roomId, setRoomId] = useState('');
-    const [remark, setRemark] = useState('');
+    const [remark, setRemark] = useState(''); 
     const [deposit, setDeposit] = useState(0);
     const [stayAt, setStayAt] = useState(new Date());
     const [stayTo, setStayTo] = useState<Date | null>(null);
@@ -57,6 +59,29 @@ export default function Room() {
             fetchData();
         }
     }, [filterRoomTypeId]);
+
+        useEffect(() => {
+            if (selectedRoomId) {
+                const lastBooking = rooms.find(room => room.id === selectedRoomId)?.bookings[0];
+
+                if (lastBooking) {
+                    setCustomerName(lastBooking.customerName);
+                    setCustomerPhone(lastBooking.customerPhone);
+                    setCustomerAddress(lastBooking.customerAddress);
+                    setCardId(lastBooking.cardId);
+                    setGender(lastBooking.gender);
+                    setDeposit(lastBooking.deposit);
+                    setStayAt(lastBooking.stayAt);
+
+                    if (lastBooking.stayTo) {
+                        setStayTo(lastBooking.stayTo);
+                    }
+
+                    setRemark(lastBooking.remark);
+                    setRoomId(lastBooking.roomId);
+                }
+            }
+        }, [selectedRoomId]);
         
        const fetchData = async () => {
         try {
@@ -204,11 +229,23 @@ export default function Room() {
                         <div>{room.roomType.name}</div>
                         <div>
                         ค่าเช่า:
-
                         <span className="font-semibold">
                             {room.roomType.price.toLocaleString()}
                         </span>
                     </div>
+
+                        {room.statusEmpty == 'no' ?(
+                            <div className="text-red-500 font-semibold">
+                                <i className="fa fa-user mr-2"></i>
+                                มีผู้เข้าพัก
+                                </div>
+                        ) : (
+                            <div className="text-green-400 font-semibold">
+                                <i className="fa fa-check mr-2"></i>
+                                ว่าง
+                                </div>
+                        )}
+
                     <div className="flex gap-1 mt-2">
                         {room.status == 'active' ? (
                         <>
@@ -363,20 +400,20 @@ export default function Room() {
                             <div className="w-full">
                                 <div>วันทีเข้าพัก</div>
                                 <input type="date" className="input-modal"
-                                value={stayAt.toISOString().split('T')[0]} 
+                                value={dayjs(stayAt).format('YYYY-MM-DD')} 
                                 onChange={(e) => setStayAt(new Date(e.target.value))} />
                             </div>
                             <div className="w-full">
                                 <div>วันที่ออก</div>
                                 <div className="flex gap-2">
                                 <input type="date" className="input-modal"
-                                value={stayTo?.toISOString().split('T')[0]} 
+                                value={dayjs(stayTo).format('YYYY-MM-DD')} 
                                 onChange={(e) => setStayTo(new Date(e.target.value))} />
-                                <Button type="button" className="w-30" variant="destructive"
+                            <Button type="button" className="w-30" variant="destructive"
                                 onClick={() => setStayTo(null)}>
                                     ไม่กำหนด
-                                </Button>
-                                </div>
+                            </Button>
+                        </div>
                             </div>
                         </div>
                         <div>

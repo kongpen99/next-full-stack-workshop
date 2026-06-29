@@ -15,9 +15,11 @@ export  async function POST (request: Request) {
             customerAddress: z.string(),
             cardId: z.string(),
             gender: z.string(),
-            roomId: z.number(),
+            roomId: z.string(),
             remark: z.string().optional(),
-            deposit: z.number().default(0)
+            deposit: z.number().default(0),
+            stayAt: z.string().transform((str) => new Date(str)),
+            stayTo: z.string().nullable().optional().transform((str) => (str ? new Date(str) : null))
         });
         const{
             customerName,
@@ -40,7 +42,7 @@ export  async function POST (request: Request) {
                 roomId: roomId,
                 remark: remark,
                 deposit: deposit,
-                stayAT: new Date(),
+                stayAt: new Date(),
                 stayTo: new Date(),
                 status: 'active'
             }
@@ -50,7 +52,7 @@ export  async function POST (request: Request) {
         //  update statusEmpty of room
         await prisma.room.update({
             where: {
-                id: roomId.toString()
+                id: roomId
             },
             data: {
                 statusEmpty: 'no'
