@@ -33,7 +33,9 @@ export  async function POST (request: Request) {
             remark,
             deposit,
             stayAt,
-            stayTo
+            waterUnit,
+            electricUnit
+
         } = schema.parse(body);
 
         // Check if room exists
@@ -77,7 +79,7 @@ export  async function POST (request: Request) {
 
         return NextResponse.json(booking);
     } catch (error) {
-        // console.error(error)
+        // console.error(error) ใช้สำหรับ debug ข้อผิดพลาด
         return NextResponse.json(
             { error:(error as Error) },
             { status: 500 }

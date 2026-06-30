@@ -40,6 +40,10 @@ export default function Room() {
     const [stayAt, setStayAt] = useState(new Date());
     const [stayTo, setStayTo] = useState<Date | null>(null);
 
+    // Log Water and Electricity
+    const [waterUnit, setWaterUnit] = useState(0);
+    const [electricityUnit, setElectricityUnit] = useState(0);
+
      useEffect(() => {
         fetchRoomTypes();
     }, []);
@@ -160,6 +164,8 @@ export default function Room() {
                     deposit: deposit,
                     stayAt: stayAt,
                     stayTo: stayTo,
+                    waterUnit: waterUnit,
+                    electricityUnit: electricityUnit,
                 };
 
                 await axios.post('/api/booking', payload);
@@ -422,6 +428,18 @@ export default function Room() {
                             value={remark} 
                             onChange={(e) => setRemark(e.target.value)} />
                         </div>
+                            <div>
+                                <div>หน่วยน้ำ</div>
+                                <input type="number" className="input-modal" 
+                                value={waterUnit} 
+                                onChange={(e) => setWaterUnit(Number(e.target.value))} />
+                            </div>
+                            <div>
+                                <div>หน่วยไฟฟ้า</div>
+                                <input type="number" className="input-modal" 
+                                value={electricityUnit} 
+                                onChange={(e) => setElectricityUnit(Number(e.target.value))} />
+                            </div>
                         <div> 
                             <Button type='submit' className='mt-3 bg-blue-500 hover:bg-green-600'>
                                 <i className="fa-solid fa-floppy-disk"></i> 
