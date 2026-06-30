@@ -23,7 +23,6 @@ export default function Room() {
     const [towerName,setTowerName] = useState('');
     const [totalLevel,setTotalLevel] = useState(0);
 
-    
     // booking ฟังก์ชัน
     // การจองห้องพัก
 
@@ -156,7 +155,7 @@ export default function Room() {
                     customerAddress: customerAddress,
                     gender: gender,
                     cardId: cardId,
-                    roomId: roomId,
+                    roomId: selectedRoomId,
                     remark: remark,
                     deposit: deposit,
                     stayAt: stayAt,
@@ -165,6 +164,7 @@ export default function Room() {
 
                 await axios.post('/api/booking', payload);
                 fetchData();
+                setIsOpenBooking(false);
                 clearBookingForm();
                 
             } catch (error) {

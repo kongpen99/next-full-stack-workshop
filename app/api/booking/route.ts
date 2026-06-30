@@ -19,7 +19,9 @@ export  async function POST (request: Request) {
             remark: z.string().optional(),
             deposit: z.number().default(0),
             stayAt: z.string().transform((str) => new Date(str)),
-            stayTo: z.string().nullable().optional().transform((str) => (str ? new Date(str) : null))
+            stayTo: z.string().nullable().optional().transform((str) => (str ? new Date(str) : null)),
+            waterUnit: z.number().default(0),
+            electricUnit: z.number().default(0)
         });
         const{
             customerName,
@@ -29,8 +31,22 @@ export  async function POST (request: Request) {
             gender,
             roomId,
             remark,
-            deposit
+            deposit,
+            stayAt,
+            stayTo
         } = schema.parse(body);
+
+        // Check if room exists
+        const room = await prisma.room.findUnique({
+            where: { id: roomId }
+        });
+
+        if (!room) {
+            return NextResponse.json(
+                { error: "Room not found" },
+                { status: 404 }
+            );
+        }
 
         const booking = await prisma.booking.create({
             data: {
@@ -42,8 +58,8 @@ export  async function POST (request: Request) {
                 roomId: roomId,
                 remark: remark,
                 deposit: deposit,
-                stayAt: new Date(),
-                stayTo: new Date(),
+                stayAt: stayAt,
+                stayTo: stayTo,
                 status: 'active'
             }
         });
@@ -61,9 +77,11 @@ export  async function POST (request: Request) {
 
         return NextResponse.json(booking);
     } catch (error) {
+        // console.error(error)
         return NextResponse.json(
             { error:(error as Error) },
             { status: 500 }
+             
         );
     }
 }
