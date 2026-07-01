@@ -182,6 +182,28 @@ export default function Room() {
             }
         }
 
+        const bookinginfo = (selectedRoomId: string) => {
+            // TODO: Implement booking info logic
+            // meke sure that the room has bookings
+            const lastBooking = rooms.find(room => room.id === selectedRoomId)?.bookings[0];
+
+            if (lastBooking) {
+                setCustomerName(lastBooking.customerName);
+                setCustomerPhone(lastBooking.customerPhone);
+                setCustomerAddress(lastBooking.customerAddress);
+                setCardId(lastBooking.cardId);
+                setGender(lastBooking.gender);
+                setDeposit(lastBooking.deposit);
+                setStayAt(lastBooking.stayAt);
+
+                if (lastBooking.stayTo) {
+                    setStayTo(new Date(lastBooking.stayTo));
+                }
+                setRemark(lastBooking.remark);
+                setRoomId(lastBooking.roomId);
+            }
+        }
+
         // ทำฟังก์ชันล้างฟอร์มการจอง
         const clearBookingForm = () => {
             setBookingId('');
@@ -243,7 +265,7 @@ export default function Room() {
                         {room.statusEmpty == 'no' ?(
                             <div className="text-red-500 font-semibold">
                                 <i className="fa fa-user mr-2"></i>
-                                มีผู้เข้าพัก
+                                 ผู้เข้าพัก
                                 </div>
                         ) : (
                             <div className="text-green-400 font-semibold">
@@ -255,10 +277,11 @@ export default function Room() {
                     <div className="flex gap-1 mt-2">
                         {room.status == 'active' ? (
                         <>
-                            <Button className="bg-blue-400 hover:bg-blue-600"
-                            onClick={() => {
+                            <Button className="bg-blue-400 hover:bg-blue-600" onClick={() => {
+                           
                                 setSelectedRoomId(room.id);
                                 setIsOpenBooking(true);
+                                bookingInfo(room.id);
                             }}>
                                 
                                 <i className="fa fa-user mr-2"></i>
@@ -423,23 +446,25 @@ export default function Room() {
                             </div>
                         </div>
                         <div>
-                            <div>หมายเหตุ</div>
-                            <input type="text" className="input-modal" 
-                            value={remark} 
-                            onChange={(e) => setRemark(e.target.value)} />
+                                <div>หมายเหตุ</div>
+                                <input type="text" className="input-modal" 
+                                value={remark} 
+                                onChange={(e) => setRemark(e.target.value)} />
+                            </div>
+                                <div className="flex gap-2">
+                                <div>
+                                    <div>หน่วยน้ำ</div>
+                                    <input type="number" className="input-modal" 
+                                    value={waterUnit} 
+                                    onChange={(e) => setWaterUnit(Number(e.target.value))} />
+                                </div>
+                                <div>
+                                    <div>หน่วยไฟฟ้า</div>
+                                    <input type="number" className="input-modal" 
+                                    value={electricityUnit} 
+                                    onChange={(e) => setElectricityUnit(Number(e.target.value))} />
+                                </div>
                         </div>
-                            <div>
-                                <div>หน่วยน้ำ</div>
-                                <input type="number" className="input-modal" 
-                                value={waterUnit} 
-                                onChange={(e) => setWaterUnit(Number(e.target.value))} />
-                            </div>
-                            <div>
-                                <div>หน่วยไฟฟ้า</div>
-                                <input type="number" className="input-modal" 
-                                value={electricityUnit} 
-                                onChange={(e) => setElectricityUnit(Number(e.target.value))} />
-                            </div>
                         <div> 
                             <Button type='submit' className='mt-3 bg-blue-500 hover:bg-green-600'>
                                 <i className="fa-solid fa-floppy-disk"></i> 

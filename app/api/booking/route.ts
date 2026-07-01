@@ -1,13 +1,11 @@
-// เขียน api สำหรับการจองห้องพัก booking room โดยรับข้อมูลจาก client
-//  POST /api/booking/route.ts
- 
-import { NextResponse } from "next/server";
-import { z } from "zod";
-import { prisma } from "@/libs/prisma";
+// POST api/booking/route.ts
 
-export  async function POST (request: Request) {
-    try{
+import { NextResponse } from 'next/server';
+import { z } from 'zod';
+import { prisma } from '@/libs/prisma';
 
+export async function POST(request: Request) {
+    try {
         const body = await request.json();
         const schema = z.object({
             customerName: z.string(),
@@ -21,9 +19,9 @@ export  async function POST (request: Request) {
             stayAt: z.string().transform((str) => new Date(str)),
             stayTo: z.string().nullable().optional().transform((str) => (str ? new Date(str) : null)),
             waterUnit: z.number().default(0),
-            electricUnit: z.number().default(0)
+            electricityUnit: z.number().default(0)
         });
-        const{
+        const {
             customerName,
             customerPhone,
             customerAddress,
@@ -33,41 +31,65 @@ export  async function POST (request: Request) {
             remark,
             deposit,
             stayAt,
+            stayTo,
             waterUnit,
-            electricUnit
-
+            electricityUnit
         } = schema.parse(body);
 
-        // Check if room exists
-        const room = await prisma.room.findUnique({
-            where: { id: roomId }
-        });
-
-        if (!room) {
-            return NextResponse.json(
-                { error: "Room not found" },
-                { status: 404 }
-            );
-        }
-
-        const booking = await prisma.booking.create({
-            data: {
-                customerName: customerName,
-                customerPhone: customerPhone,
-                customerAddress: customerAddress,
-                cardId: cardId,
-                gender: gender,
+        const oldBooking = await prisma.booking.findFirst({
+            where: {
                 roomId: roomId,
-                remark: remark,
-                deposit: deposit,
-                stayAt: stayAt,
-                stayTo: stayTo,
-                status: 'active'
+                room: {
+                    statusEmpty: 'no',
+                    status: 'active'
+                }
             }
         });
 
+        let bookingId = '';
 
-        //  update statusEmpty of room
+        if (oldBooking) {
+            // update
+            bookingId = oldBooking.id;
+
+            await prisma.booking.update({
+                where: {
+                    id: oldBooking.id
+                },
+                data: {
+                    customerName: customerName,
+                    customerPhone: customerPhone,
+                    customerAddress: customerAddress,
+                    cardId: cardId,
+                    gender: gender,
+                    remark: remark,
+                    deposit: deposit,
+                    stayAt: stayAt,
+                    stayTo: stayTo,
+                }
+            });
+        } else {
+            // create
+            const booking = await prisma.booking.create({
+                data: {
+                    customerName: customerName,
+                    customerPhone: customerPhone,
+                    customerAddress: customerAddress,
+                    cardId: cardId,
+                    gender: gender,
+                    roomId: roomId,
+                    remark: remark,
+                    deposit: deposit,
+                    stayAt: stayAt,
+                    stayTo: stayTo,
+                    status: 'active'
+                }
+            });
+
+            bookingId = booking.id;
+        }
+
+        // update statusEmpty of room
         await prisma.room.update({
             where: {
                 id: roomId
@@ -77,14 +99,70 @@ export  async function POST (request: Request) {
             }
         });
 
-        return NextResponse.json(booking);
+        await updateUnitWaterAndElectricity(bookingId, waterUnit, electricityUnit);
+
+        return NextResponse.json({});
     } catch (error) {
-        // console.error(error) ใช้สำหรับ debug ข้อผิดพลาด
+        console.log(error);
         return NextResponse.json(
-            { error:(error as Error) },
+            { error: (error as Error).message },
             { status: 500 }
-             
         );
     }
 }
 
+const updateUnitWaterAndElectricity = async (
+    bookingId: string,
+    waterUnit: number,
+    electricityUnit: number
+) => {
+    const oldWaterUnit = await prisma.waterLog.findFirst({
+        where: {
+            bookingId: bookingId,
+            waterUnit: waterUnit
+        }
+    });
+
+    const oldElectricityUnit = await prisma.electricityLog.findFirst({
+        where: {
+            bookingId: bookingId,
+            electricityUnit: electricityUnit
+        }
+    });
+
+    if (oldWaterUnit) {
+        await prisma.waterLog.update({
+            where: {
+                id: oldWaterUnit.id
+            },
+            data: {
+                waterUnit: waterUnit
+            }
+        });
+    } else {
+        await prisma.waterLog.create({
+            data: {
+                bookingId: bookingId,
+                waterUnit: waterUnit,
+            }
+        });
+    }
+
+    if (oldElectricityUnit) {
+        await prisma.electricityLog.update({
+            where: {
+                id: oldElectricityUnit.id
+            },
+            data: {
+                electricityUnit: electricityUnit
+            }
+        });
+    } else {
+        await prisma.electricityLog.create({
+            data: {
+                bookingId: bookingId,
+                electricityUnit: electricityUnit
+            }
+        });
+    }
+}
