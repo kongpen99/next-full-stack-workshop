@@ -1,3 +1,6 @@
+import { ElectricityLogInterface } from "./ElectricityLogInterface";
+import { WaterLogInterface } from "./WaterLogInterface";
+
 export interface BookingInterface {
     id: string;
     customerName: string;
@@ -11,4 +14,6 @@ export interface BookingInterface {
     stayAt: Date;
     stayTo: Date;
     status: string;
+    waterLogs: WaterLogInterface[];
+    electricityLogs: ElectricityLogInterface[];
 }

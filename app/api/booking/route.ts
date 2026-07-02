@@ -49,7 +49,7 @@ export async function POST(request: Request) {
         let bookingId = '';
 
         if (oldBooking) {
-            // update
+            // update booking
             bookingId = oldBooking.id;
 
             await prisma.booking.update({
@@ -69,8 +69,8 @@ export async function POST(request: Request) {
                 }
             });
         } else {
-            // create
-            const booking = await prisma.booking.create({
+            // create booking
+            const newBooking = await prisma.booking.create({
                 data: {
                     customerName: customerName,
                     customerPhone: customerPhone,
@@ -86,7 +86,7 @@ export async function POST(request: Request) {
                 }
             });
 
-            bookingId = booking.id;
+            bookingId = newBooking.id;
         }
 
         // update statusEmpty of room
@@ -115,7 +115,9 @@ const updateUnitWaterAndElectricity = async (
     bookingId: string,
     waterUnit: number,
     electricityUnit: number
+
 ) => {
+
     const oldWaterUnit = await prisma.waterLog.findFirst({
         where: {
             bookingId: bookingId,
@@ -139,11 +141,12 @@ const updateUnitWaterAndElectricity = async (
                 waterUnit: waterUnit
             }
         });
-    } else {
+   } else {
         await prisma.waterLog.create({
             data: {
                 bookingId: bookingId,
                 waterUnit: waterUnit,
+                updatedAt: new Date()
             }
         });
     }
@@ -161,7 +164,8 @@ const updateUnitWaterAndElectricity = async (
         await prisma.electricityLog.create({
             data: {
                 bookingId: bookingId,
-                electricityUnit: electricityUnit
+                electricityUnit: electricityUnit,
+                updatedAt: new Date()
             }
         });
     }

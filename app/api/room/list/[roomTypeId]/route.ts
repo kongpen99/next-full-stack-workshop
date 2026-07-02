@@ -14,13 +14,32 @@ export async function GET (
         const {roomTypeId} = await params;
         const rooms = await prisma.room.findMany({
             orderBy: {
-                name: 'asc'
+                createdAt: 'asc'
             },
             include: {
                 roomType: true,
              // ดึงข้อมูลการจองทั้งหมดของห้องนี้
-                bookings: true
-            
+                bookings: {
+                    include: {
+                        waterLogs: {
+                            orderBy: {
+                                createdAt: 'desc'
+                            },
+                            take:1
+                        
+                        },
+                        electricityLogs: {
+                            orderBy: {
+                                createdAt: 'desc'
+                            },
+                            take:1
+                        }
+                    },
+                    orderBy: {
+                        createdAt: 'desc'
+                    },
+                    take: 1
+                }
             },
             where: {
                
@@ -28,7 +47,6 @@ export async function GET (
             }
         })
         return NextResponse.json(rooms);
-        
     } catch (error) {
         return NextResponse.json(
             { error: (error as Error).message },
