@@ -29,6 +29,12 @@ export default function Sidebar() {
                             <span className="ml-3">ห้องพัก</span>
                         </Link>
                     </li>
+                    <li>
+                        <Link href="/home/money-added" className="flex items-center p-2 text-base font-normal text-gray-300 rounded-lg hover:bg-gray-100">
+                            <i className="fas solid fa-database w-7"></i>
+                            <span className="ml-3">ค่าใช้จายเงินเพิ่ม</span>
+                        </Link>
+                    </li>
             </ul>
         </div>
     )
