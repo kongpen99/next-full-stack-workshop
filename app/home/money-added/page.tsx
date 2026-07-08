@@ -1,8 +1,6 @@
 // สร้างเมนูเพิ่มเงิน
 
 'use client';
-
-
 import { useEffect,useState } from 'react';
 import  Swal from 'sweetalert2'; 
 import  axios from 'axios';
@@ -55,7 +53,6 @@ export default function MoneyAddedPage() {
            setId('');
            setName('');
            setAmount(0);
-
 
         } catch (error) {
             Swal.fire({
@@ -130,8 +127,31 @@ export default function MoneyAddedPage() {
                         </td>
                     </tr>
                 ))}
+
+                {/* Modal สำหรับเพิ่มค่าใช้จ่าย */}
+                <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} title="เพิ่มค่าใช้จ่าย">
+                    <form onSubmit={handLeSubmit}>
+
+                        <div className="mb-4">
+                            <label htmlFor="name">ชื่อค่าใช้จ่าย</label>
+                            <input type="text" id="name" value={name} 
+                              onChange={(e) => setName(e.target.value)} className="input-modal" />
+                        </div>
+                        <div className="mb-4">
+                            <label htmlFor="amount">จำนวนเงิน</label>
+                            <input type="number" id="amount" value={amount} 
+                                onChange={(e) => setAmount(Number(e.target.value))} className="input-modal" />
+                        </div>
+                        <div className="flex justify-end">
+                        <button type="submit" className="btn btn-primary">
+                            <i className="fa fa-check"></i>
+                            บันทึกเพิ่มค่าใช้จ่าย
+                        </button>
+                        </div>
+                    </form>
+                </Modal>
             </tbody>
-        </table>
+         </table>
         </div>
-    )
+    );
 }

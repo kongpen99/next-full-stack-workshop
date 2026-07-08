@@ -5,6 +5,7 @@
     import { prisma } from "@/libs/prisma";
     import { z } from "zod";
 
+   // GET /api/money-added/route.ts  // ดึงข้อมูลการเพิ่มเงินออกมาแสดง
     export async function GET () {
         try{
 
@@ -37,7 +38,7 @@
             const {name ,amount} = schema.parse(body);
             const moneyAdded = await prisma.moneyAdded.create({
                 data: { 
-                    name: name,
+                    name: name, 
                     amount: amount,
                     status: "active"
                 }
