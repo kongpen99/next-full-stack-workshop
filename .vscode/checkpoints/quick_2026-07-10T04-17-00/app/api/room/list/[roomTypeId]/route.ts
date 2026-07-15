@@ -14,7 +14,7 @@ export async function GET (
         const {roomTypeId} = await params;
         const rooms = await prisma.room.findMany({
             orderBy: {
-                name: 'asc'
+                createdAt: 'asc'
             },
             include: {
                 roomType: true,

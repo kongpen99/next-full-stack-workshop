@@ -23,12 +23,6 @@ export default function Sidebar() {
                         <span className="ml-3">ประเภทห้องพัก</span>
                     </Link>
                 </li>
-                <li>
-                    <Link href="/home/water-and-electricity-log" className="flex items-center p-2">
-                        <i className="fas solid fa-note-sticky w-7"></i>
-                        <span>บันทึกมิเตอร์น้ำ,ไฟฟ้า</span>
-                    </Link>
-                </li>
                     <li>
                         <Link href="/home/room" className="flex items-center p-2">
                             <i className="fas solid fa-box w-7"></i>
@@ -53,5 +47,3 @@ export default function Sidebar() {
         </div>
     )
 }
-
-

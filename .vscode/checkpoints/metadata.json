@@ -1,0 +1,10 @@
+{
+  "quick_2026-07-10T04-17-00": {
+    "timestamp": "2026-07-10T04-17-00",
+    "description": "Quick checkpoint",
+    "fileCount": 17092,
+    "isIncremental": false,
+    "totalSize": 1515669606,
+    "incrementalSize": 1515669606
+  }
+}
