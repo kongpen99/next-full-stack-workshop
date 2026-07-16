@@ -25,12 +25,16 @@ export default function WaterAndElectricityLogPage() {
 
     const handleSave = async (roomName: string, waterMeter: number, electricityMeter: number) => {
         try {
-                const payload = {
-                    roomName: roomName,
-                    waterMeter: waterMeter,
-                    electricityMeter: electricityMeter,
-                };
-                await axios.post('/api/water-and-electricity-log', payload);
+            if (waterMeter === 0 || electricityMeter === 0) {
+                return;
+            }
+
+            const payload = {
+                roomName: roomName,
+                waterMeter: waterMeter,
+                electricityMeter: electricityMeter,
+            };
+            await axios.post('/api/water-and-electricity-log', payload);
            
         } catch (error) {
             Swal.fire({
@@ -71,27 +75,43 @@ export default function WaterAndElectricityLogPage() {
     // TODO: Implement update room data function
     const  handLeUpdateRoomData = (
             roomName:string,
-            newWaterUnit: number,
-            newElectricityUnit: number
+            newWaterUnit?: number,
+            newElectricityUnit?: number
     ) => {
         setRooms(prev => {
 
-            const index=  prev.findIndex(r => r.name === roomName);
-            if (index === -1) return prev;
+            const index=  prev.findIndex(r => r.name === roomName); // find index of room
+            if (index === -1) return prev; // if room not found, return original array ถ้าหาไม่เจอให้ Return ค่าเก่า
             
-            const roomsCopy = [...prev];
+            const roomsCopy = [...prev]; // copy array จำค่าเก่า
             const room = roomsCopy[index];
-            const booking = room.bookings[0];
+            const booking = room.bookings[0]; // get first booking
 
-          
+            if (!booking) return prev; // if booking not found, return original array คือค่าว่าง
 
-        })
-
-
-        
+            roomsCopy[index] = {
+                ...room,
+                bookings: [
+                    {
+                        ...booking,
+                        waterLogs: [
+                            {
+                                ...booking.waterLogs[0],
+                                waterUnit: newWaterUnit ?? booking.waterLogs[0].waterUnit
+                            }
+                        ],
+                        electricityLogs: [
+                            {
+                                ...booking.electricityLogs[0],
+                                electricityUnit: newElectricityUnit ?? booking.electricityLogs[0].electricityUnit
+                            }
+                        ]
+                    }
+                ]
+            }
+            return roomsCopy;
+        })   
     }
-
-
     return (
         <div>
             <h1 className="text-2xl font-semibold">บันทึกมิเตอร์น้ำ,ไฟฟ้า</h1>
@@ -104,7 +124,7 @@ export default function WaterAndElectricityLogPage() {
                     </Button>
                     ))}
                 </div> 
-
+                
                 {rooms.length > 0 ? (
                     <table className="table mt-2">
                         <thead>
@@ -112,23 +132,50 @@ export default function WaterAndElectricityLogPage() {
                                 <th>เลขที่ห้อง</th>
                                 <th>มิเตอร์น้ำ</th>
                                 <th>มิเตอร์ไฟฟ้า</th>
-                            </tr>
+                            </tr> 
                         </thead>
                         <tbody>
-
                             {rooms.map((room) => (
                                 <tr key={room.id }>
                                     <td>{room.name }</td>
-                                    <td><input type="number" className="input text-right"
-                                     value={room.bookings[0]?.waterLogs[0]?.waterUnit}
-                                     onChange={() => {}}
-                                     onBlur={(e) => handleSave(room.name, parseInt(e.target.value), 0)}
-                                    /></td>
-                                    <td><input type="number" className="input text-right"
-                                    value={room.bookings[0]?.electricityLogs[0]?.electricityUnit}
-                                    onChange={() => {}}
-                                    onBlur={(e) => handleSave(room.name, 0, parseInt(e.target.value))}
-                                    /></td>
+                                <td>
+                                    {room.bookings[0]?.waterLogs[0]?.waterUnit ?
+                                    <input type="number" className="input text-right"
+                                        value={room.bookings[0]?.waterLogs[0]?.waterUnit ?? ''}
+                                        onChange={(e) => handLeUpdateRoomData(
+                                            room.name,
+                                            Number(e.target.value)
+                                        )}
+                                        onBlur={(e) => handleSave(
+                                            room.name,
+                                            Number(e.target.value),
+                                            room.bookings[0]?.electricityLogs[0]?.electricityUnit ?? 0
+                                    )}
+                                      />
+                                      :(
+                                        <p>ไม่มีผู้เข่้าพัก</p>
+                                      )
+                                    }
+                                </td>
+                                    <td>
+                                 {room.bookings[0]?.electricityLogs[0]?.electricityUnit ?
+                                     <input type="number" className="input text-right"
+                                        value={room.bookings[0]?.electricityLogs[0]?.electricityUnit ?? ''}
+                                            onChange={(e) => handLeUpdateRoomData(
+                                            room.name,
+                                            undefined,
+                                            Number(e.target.value)
+                                        )}
+                                        onBlur={(e) => handleSave(
+                                            room.name,
+                                            room.bookings[0]?.waterLogs[0]?.waterUnit ?? 0,
+                                            Number(e.target.value)
+                                         )}
+                                    />
+                                    :(
+                                        <p>ไม่มีผู้เข่้าพัก</p>
+                                      )}
+                                    </td>
                                 </tr>
                             ))}
                         </tbody>
