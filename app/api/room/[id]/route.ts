@@ -17,8 +17,11 @@ export async function GET (
     try {
         const { id } = await params;
         const room = await prisma.room.findUnique({
+
             include: {
+                roomType: true,
                 bookings: {
+
                     include: {
                         waterLogs: {
                             orderBy: { createdAt: 'desc'}, 
