@@ -5,6 +5,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import Button from "@/components/ui/button";
 import modal from "@components/ui/modal";
+import Modal from "@/components/ui/modal";
 
 
 interface Bill {
@@ -88,6 +89,14 @@ export default function BillsPage() {
         setIsOpen(false);
         setSelectedBill(null); 
 
+        Swal.fire({
+        icon: "success",
+        title: "Bill saved successfully",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+       
+
         } catch (error) {
             Swal.fire({
                 title: 'Error',
@@ -129,11 +138,106 @@ export default function BillsPage() {
                 month: 'short',
                 day: 'numeric',
             });
-        }
+        };
    
   return (
     <div>
-      <h1>Bills</h1>
-    </div>
+      <h1 className='text-2xl font-semibold'>
+        <i className="fa-solid fa-file-invoice w-7"></i>
+        รายการบิล/ใบเสร็จ
+        </h1>
+
+        <table className="table mt-3">
+            <thead>
+                <tr>
+                    <th className="text-left">ห้อง</th>
+                    <th className="text-left">ลูกค้า</th>
+                    <th className="text-left">วันที่</th>
+                    <th className="text-right">ยอดเงิน</th>
+                    <th className="text-center">สถานะ</th>
+                    <th className="text-center w-[1ุุ30px]">การดำเนินการ</th>
+                </tr>
+            </thead>
+                <tbody>
+
+                    {bills.map((bill) => (
+                        <tr key={bill.id}>
+                            <td>{bill.room.name}</td>
+                            <td>{bill.booking.customerName}</td>
+                            <td>{formateDate(bill.billData)}</td>
+                            <td className="text-right">{bill.totalAmount.toLocaleString()}</td>
+                            <td className={getStatusColor(bill.status) + ' text-center'}>
+                                {getStatusText(bill.status)}
+                            </td>
+                            <td className="text-center">
+                                <Button onClick={() => handLeReceivePayment(bill)}
+                                className="bg-green-600 hover:bg-green-700">
+                                    <i className="fa fa-money-bill mr-2"></i>
+                                    รับชำระเงิน
+                                </Button>
+                            </td>
+                        </tr>
+                    ))}
+
+                </tbody>
+        </table>
+
+        {/* เมื่อทำการ click ปุ่มรับชำระเงิน จะมี Popup ขึ้นมา */}
+        <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} title="รับชำระเงิน">
+            <form onSubmit={handLeSubmitPayment}>
+                <div className="mb-4">
+                    <label htmlFor="billInfo" className="block text-sm font-medium mb-2">ข้อมูลบิล</label>
+                    <div className="bg-gray-100 p-3 rounded">
+                        <p><strong>ห้อง:</strong> {selectedBill?.room.name}</p>
+                        <p><strong>ผู้เช่า</strong> {selectedBill?.booking.customerName}</p>
+                        <p><strong>ยอดเงิน</strong> {selectedBill?.totalAmount.toLocaleString('th-TH',{
+                            minimumFractionDigits:2,
+                            maximumFractionDigits:2
+                        })} บาท</p>
+                    </div>
+                </div>
+                <div className="mb-4">
+                    <label htmlFor="paymentDate" className="block text-sm font-medium mb-2">
+                        วันที่ได้เงิน
+                    </label>
+                    <input
+                        type="date"
+                        id="paymentDate"
+                        value={paymentDate}
+                        onChange={(e) => setPaymentDate(e.target.value)}
+                        className="input-modal w-full"
+                        required
+                    />
+                </div>
+
+                <div className="mb-4">
+                    <label htmlFor="lateFee" className="block text-sm font-medium mb-2">
+                        ค่าปรับ(ถ้ามี)
+                    </label>
+                    <input
+                        type="number"
+                        id="lateFee"
+                        value={lateFee}
+                        onChange={(e) => setLateFee(Number(e.target.value))}
+                        className="input-modal w-full"
+                    />
+                </div>
+                <div className="flex gap-2">
+                    <Button type="submit" className="btn btn-primary">
+                        <i className="fa fa-check mr-2"></i>
+                        บันทึกการชำระเงิน
+                    </Button>
+                    <Button
+                        className="bg-red-600 text-white"
+                        type="button"
+                        variant="secondary"
+                        onClick={() => setIsOpen(false)}
+                    >
+                        ยกเลิก
+                    </Button>
+                </div>
+            </form>
+        </Modal>       
+    </div>    
   );
 }

@@ -51,7 +51,7 @@ export default function Sidebar() {
                    <li>
                         <Link href="/home/bills"
                             className="flex items-center gap-2">
-                            <i className="fa-solid fa-file-invoice w-7"></i>
+                            <i className="fa-solid fa-file-invoice w-[28px]"></i>
                             <span>รายการบิล/ใบเสร็จ</span>
                         </Link>
                     </li>
