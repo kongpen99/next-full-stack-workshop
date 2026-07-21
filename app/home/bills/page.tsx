@@ -89,12 +89,23 @@ export default function BillsPage() {
         setIsOpen(false);
         setSelectedBill(null); 
 
-        Swal.fire({
-        icon: "success",
-        title: "Bill saved successfully",
-        showConfirmButton: false,
-        timer: 1500,
-      });
+    //     Swal.fire({
+    //     icon: "เพิ่มรายการสำเร็จ",
+    //     title: "Bill saved successfully",
+    //     showConfirmButton: false,
+    //     timer: 1500,
+    //   });
+
+    Swal.fire({
+    icon: 'success',
+    title: 'สำเร็จ',
+    text: 'บันทึกการชำระเงินเรียบร้อย',
+    confirmButtonText: 'OK',
+    confirmButtonColor: '#6C63FF',
+    allowOutsideClick: false,
+    allowEscapeKey: false,
+    width: 500
+});
        
 
         } catch (error) {
