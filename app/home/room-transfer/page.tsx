@@ -24,21 +24,25 @@ export default function RoomTransferPage() {
   const [transferFee, setTransferFee] = useState(0);
   const [reason, setReason] = useState("");
 
+
   useEffect(() => {
-    // fetchData();
+    fetchData();
+    fetchRoomData();
   }, []);
+
 
   const fetchRoomData = async () => {
     try {
       const typesRes = await axios.get('/api/room-type');
       const types: RoomTypeInterface[] = typesRes.data;
-     
+
       const roomPromises = types.map(type => axios.get('/api/room/list/' + type.id));
       const roomResponse = await Promise.all(roomPromises);
       const allRooms = roomResponse.flatMap(res => res.data);
 
       setRooms(allRooms);
-    }catch (err) {
+
+    } catch (err) {
       Swal.fire({
         title: "error",
         icon: "error",
@@ -51,6 +55,7 @@ export default function RoomTransferPage() {
 
     try {
       const response = await axios.get('/api/room-transfer');
+      setTransfers(response.data);
     } catch (err) {
       Swal.fire({
         title: "error",
@@ -68,6 +73,64 @@ export default function RoomTransferPage() {
     setTransferFee(0);
     setReason("");
   }
+  // ฟังก์ชันสำหรับบันทึกข้อมูล
+  const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      if (!fromRoomId || !toRoomId) {
+        Swal.fire("เตือน", "กรุณากรอกข้อมูลให้ครบถ้วน", "warning");
+        return;
+      }
+      const payload = {
+        fromRoomId: fromRoomId,
+        toRoomId: toRoomId,
+        bookingId: bookingId,
+        transferDate: dayjs(transferDate).toISOString(),
+        transferFee: transferFee,
+        reason: reason,
+      }
+
+      await axios.post('/api/room-transfer', payload);
+      Swal.fire({
+        title: "success",
+        icon: "success",
+        text: "บันทึกข้อมูลสำเร็จ",
+        timer: 1000,
+        timerProgressBar: true,
+        showConfirmButton: false,
+      });
+
+
+      fetchData();
+      fetchRoomData();
+      clearForm();
+
+
+    } catch (err) {
+      Swal.fire({
+        title: "error",
+        icon: "error",
+        text: (err as Error).message,
+      })
+    }
+  }
+
+
+  // function สำหรับ ดึงข้อมูลการจองจากห้องที่เลือก //
+  const handleFromRoomChange = (roomId: string) => {
+    setFromRoomId(roomId);
+
+    const selectedRoom = rooms.find(r => r.id === roomId);
+
+    if (selectedRoom && selectedRoom.bookings.length > 0) {
+      setBookingId(selectedRoom.bookings[0].id);
+
+    } else {
+      setBookingId("");
+    }
+
+  }
+  // function กรองห้องพักที่ว่างและไม่ว่าง
 
   const occupiiedRooms = rooms.filter(r => r.statusEmpty === 'no');
   const emptyRooms = rooms.filter(r => r.statusEmpty !== 'no');
@@ -160,27 +223,91 @@ export default function RoomTransferPage() {
       </div>
 
       {/* Modal */}
+
       <Modal
         title="สร้างรายการย้ายห้อง"
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}>
-        <form className="space-y-6 py-2">
-          <div className="grid grid-cols-1 gap-6">
+        <form onSubmit={handleSave} className="space-y-6 py-2">
+          <div className="grid grid-cols-2 gap-6">
             <div className="space-y-2">
               <label className="item-center gap-2 flex">
                 <i className="fa-solid fa-magnifying-glass text-blue-500"></i>
                 ห้องต้นทาง (ห้องที่ไม่ว่าง)
               </label>
 
-              <select className="input-modal">
+
+              <select className="input-modal"
+                value={toRoomId}
+                onChange={(e) => setToRoomId(e.target.value)}
+              >
                 <option>--- เลือกห้อง ---</option>
-                {occupiiedRooms.map(r => (
+                {emptyRooms.map(r => (
                   <option key={r.id} value={r.id}>
-                    {r.name} - {r.bookings[0]?.customerName}
+                    {r.name} - {r.roomType.name}
                   </option>
                 ))}
               </select>
             </div>
+
+            <div className="space-y-2">
+              <label className="item-center gap-2 flex">
+                <i className="fa-solid fa-magnifying-glass text-green-500"></i>
+                ห้องปลายทาง (ห้องว่าง)
+              </label>
+              <select className="input-modal">
+                <option>--- เลือกห้อง ---</option>
+                {emptyRooms.map(r => (
+                  <option key={r.id} value={r.id}>
+                    {r.name} - {r.roomType.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <label className="flex item-center gap-2 flex">
+                <i className="fa-solid fa-calendar-days text-blue-500"></i>
+                วันที่ย้าย
+              </label>
+              <input type="date" className="input-modal" required
+                value={dayjs(transferDate).format("YYYY-MM-DD")}
+                onChange={(e) => setTransferDate(new Date(e.target.value))}
+
+              />
+            </div>
+            <div>
+              <label className="item-center gap-2 flex">
+                <i className="fa-solid fa-money-bill-wave text-yellow-500"></i>
+                ค่าขนย้าย
+              </label>
+              <input type="number" className="input-modal" placeholder='0'
+                value={transferFee}
+                onChange={(e) => setTransferFee(Number(e.target.value))}
+              />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <label>
+              <i className="fa-solid fa-pen-to-square text-blue-500"></i>
+              เหตุผลการย้าย
+            </label>
+            <textarea className="input-modal" placeholder="กรุณาระบุเหตุผลการย้าย"
+              value={reason} onChange={(e) => setReason(e.target.value)}
+            />
+          </div>
+
+          <div className="flex justify-end gap-2">
+            <Button className="text-green-600 bg-white  border-green-600 border hover:bg-green-600 hover:text-white">
+              <i className="fa-solid fa-save"></i>
+              ยืนยันหารย้ายห้อง
+            </Button>
+            <Button className="text-red-600 bg-white border-red-600 border hover:bg-red-600 hover:text-white">
+              <i className="fa-solid fa-cancel"></i>
+              ยกเลิก
+            </Button>
           </div>
         </form>
       </Modal>
