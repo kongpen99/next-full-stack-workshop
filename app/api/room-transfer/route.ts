@@ -1,24 +1,70 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/libs/prisma";
+import { z } from 'zod';
+import { prisma } from '@/libs/prisma';
+
+const roomTransferSchema = z.object({
+  fromRoomId: z.string(),
+  toRoomId: z.string(),
+  bookingId: z.string(),
+  transferDate: z.string().optional(),
+  reason: z.string().optional(),
+  transferFee: z.number().optional()
+});
 
 export async function GET() {
   try {
-    const roomTransfers = await prisma.roomTransfer.findMany({
+    const transfers = await prisma.roomTransfer.findMany({
       include: {
-        fromRoom: true,
-        toRoom: true,
-        booking: true,
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
+        fromRoom: {
+          include: {
+            roomType: true
+          }
+        },
+        toRoom: {
+          include: {
+            roomType: true
+          }
+        },
+        booking: true
+      }
+    })
 
-    return NextResponse.json(roomTransfers);
+    return NextResponse.json(transfers);
   } catch (error) {
     return NextResponse.json(
       { error: (error as Error).message },
       { status: 500 }
-    );
+    )
   }
 }
+
+export async function POST(request: Request) {
+  try {
+    const body = await request.json();
+    const validatedData = roomTransferSchema.parse(body);
+
+    const transfer = await prisma.roomTransfer.create({
+      data: {
+        fromRoomId: validatedData.fromRoomId,
+        toRoomId: validatedData.toRoomId,
+        bookingId: validatedData.bookingId,
+        transferDate: validatedData.transferDate ? new Date(validatedData.transferDate) : new Date(),
+        reason: validatedData.reason ?? '',
+        transferFee: validatedData.transferFee,
+        status: 'pending'
+      }
+    })
+
+    return NextResponse.json(transfer);
+  } catch (error) {
+    return NextResponse.json(
+      { error: (error as Error).message },
+      { status: 500 }
+    )
+  }
+}
+
+
+
+
+

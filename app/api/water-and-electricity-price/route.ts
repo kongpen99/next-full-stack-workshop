@@ -9,16 +9,16 @@ import { z } from "zod";
 
 export async function GET() {
     try {
-    const waterAndElectricityPrices = await prisma.waterAndElectricityPrice.findFirst();
-    return NextResponse.json(waterAndElectricityPrices ?? {
-        id: null,
-        waterPricePerUnit: 0,
-        electricityPricePerUnit: 0
-    });
+        const waterAndElectricityPrices = await prisma.waterAndElectricityPrice.findFirst();
+        return NextResponse.json(waterAndElectricityPrices ?? {
+            id: null,
+            waterPricePerUnit: 0,
+            electricityPricePerUnit: 0
+        });
 
     } catch (error) {
         return NextResponse.json(
-            { message: (error as Error).message }, 
+            { message: (error as Error).message },
             { status: 500 }
         );
     }
@@ -41,7 +41,7 @@ export async function POST(request: Request) {
         return NextResponse.json(waterAndElectricityPrice);
     } catch (error) {
         return NextResponse.json(
-            { message: (error as Error).message }, 
+            { message: (error as Error).message },
             { status: 500 }
         );
     }
