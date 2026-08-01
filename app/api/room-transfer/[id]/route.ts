@@ -1,6 +1,10 @@
+// PUT /api/room-transfer/:id
+
 import { NextResponse } from 'next/server';
 import { prisma } from '@/libs/prisma';
 
+
+// การอนุมัติ/ยกเลิกการย้ายห้อง
 export async function PUT(
   req: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -9,6 +13,7 @@ export async function PUT(
     const { id } = await params;
     const body = await req.json();
 
+    // ดึงข้อมูลจากตาราง roomTransfer
     const transfer = await prisma.roomTransfer.update({
       where: { id },
       data: {
@@ -16,15 +21,19 @@ export async function PUT(
       }
     });
 
+    // ถ้าสถานะเป็น completed
     if (body.status === 'completed') {
+      // 1. ย้ายห้องพักใน Booking
       await prisma.booking.update({
         where: { id: transfer.bookingId },
         data: { roomId: transfer.toRoomId }
       });
+      // 2. อัปเดตสถานะห้องต้นทางเป็น ว่าง
       await prisma.room.update({
         where: { id: transfer.fromRoomId },
         data: { statusEmpty: 'empty' }
       });
+      // 3. อัปเดตสถานะห้องปลายทางเป็น เข้าพักแล้ว
       await prisma.room.update({
         where: { id: transfer.toRoomId },
         data: { statusEmpty: 'no' }
@@ -39,7 +48,8 @@ export async function PUT(
     );
   }
 }
-
+// DELETE /api/room-transfer/:id
+// ยกเลิกการย้ายห้อง
 export async function DELETE(
   req: Request,
   { params }: { params: Promise<{ id: string }> }

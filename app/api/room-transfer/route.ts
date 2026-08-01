@@ -51,11 +51,11 @@ export async function POST(request: Request) {
         transferDate: validatedData.transferDate ? new Date(validatedData.transferDate) : new Date(),
         reason: validatedData.reason ?? '',
         transferFee: validatedData.transferFee,
-        status: 'pending'
+        status: 'pending' //รออนุมัติ
       }
     })
 
-    return NextResponse.json(transfer);
+    return NextResponse.json(transfer);  //เพื่อทำการตอบกลับค่าที่ทำการบันทึก//
   } catch (error) {
     return NextResponse.json(
       { error: (error as Error).message },

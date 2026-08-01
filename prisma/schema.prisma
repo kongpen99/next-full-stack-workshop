@@ -76,7 +76,7 @@ model Booking {
   waterLogs       WaterLog[]
   bills           Bill[]
   transfers       RoomTransfer[] // ขอย้ายห้อง
-  moveOuts        MoveOut[]     // ย้ายออก
+  moveOuts        MoveOut[] // ย้ายออก
 }
 
 model ElectricityLog {
@@ -167,18 +167,18 @@ model RoomTransfer {
 }
 
 model MoveOut {
-  id             String    @id @default(cuid())
-  roomId         String
-  room           Room      @relation(fields: [roomId], references: [id])
-  bookingId      String
-  booking        Booking   @relation(fields: [bookingId], references: [id])
-  moveOutDate    DateTime  @default(now())
-  reason         String
+  id            String    @id @default(cuid())
+  roomId        String
+  room          Room      @relation(fields: [roomId], references: [id])
+  bookingId     String
+  booking       Booking   @relation(fields: [bookingId], references: [id])
+  moveOutDate   DateTime  @default(now())
+  reason        String
   depositReturn Int       @default(0) // คืนเงินประกัน
-  refund         Int       @default(0) // ค่าปรับเพิ่ม
-  status         String    @default("pending") // active, inactive
-  approveBy      String?
-  approveAt      DateTime?
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+  refund        Int       @default(0) // ค่าปรับเพิ่ม
+  status        String    @default("pending") // active, inactive
+  approveBy     String?
+  approveAt     DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 }
