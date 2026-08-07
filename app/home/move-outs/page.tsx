@@ -54,7 +54,7 @@ export default function RoomOut() {
     const fetchRoomData = async () => {
         try {
             const typesRes = await axios.get('/api/room-type');
-            setRoomTypes(typesRes.data);
+            // setRoomTypes(typesRes.data);
 
             const roomPromise = typesRes.data.map((type: any) => axios.get('/api/room/list/' + type.id));
             const roomResponse = await Promise.all(roomPromise);

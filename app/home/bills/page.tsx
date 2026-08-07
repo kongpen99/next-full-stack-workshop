@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import Button from "@/components/ui/button";
-import modal from "@components/ui/modal";
+// import modal from "@components/ui/modal";
 import Modal from "@/components/ui/modal";
 
 
@@ -19,18 +19,18 @@ interface Bill {
     waterCost: Number;
     electricityCost: Number;
     roomPrice: Number;
-    additionalCode:number;
-    status:String;
-    room:{
+    additionalCode: number;
+    status: String;
+    room: {
         id: String;
         name: String;
 
     },
-    booking:{
+    booking: {
         id: String;
         customerName: string;
     },
-    billItems:{
+    billItems: {
         id: String;
         name: String;
         amount: number;
@@ -40,73 +40,73 @@ interface Bill {
 }
 
 export default function BillsPage() {
-   const [bills, setBills] = useState<Bill[]>([]);
-   const [selectedBill, setSelectedBill] = useState<Bill | null>(null);
-   const [paymentDate, setPaymentDate] = useState<string>('');
-   const [lateFee, setLateFee]= useState<number>(0);
-   const [isOpen,setIsOpen]= useState(false);
+    const [bills, setBills] = useState<Bill[]>([]);
+    const [selectedBill, setSelectedBill] = useState<Bill | null>(null);
+    const [paymentDate, setPaymentDate] = useState<string>('');
+    const [lateFee, setLateFee] = useState<number>(0);
+    const [isOpen, setIsOpen] = useState(false);
 
 
-   const fetchData =  async () => {
-    try {
-        const response = await axios.get('/api/bills');
-        setBills(response.data);    
-        
-    } catch (error) {
-        Swal.fire({
-            title: 'Error',
-            text: 'Failed to fetch bills',
-            icon: 'error'
-        });
-    }
-   };
+    const fetchData = async () => {
+        try {
+            const response = await axios.get('/api/bills');
+            setBills(response.data);
 
-   useEffect(() => {
-    fetchData();
-   }, []);
-
-   const handLeReceivePayment = async (bill: Bill) => {
-    setSelectedBill(bill);
-    setLateFee(0);
-    setPaymentDate(new Date().toISOString().split('T')[0]);
-    setIsOpen(true);
-   };
-
-   const handLeSubmitPayment = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    if (!selectedBill) return;
-
-    try {
-        const payload = {
-            billId: selectedBill.id,
-            paymentDate: paymentDate,
-            lateFee:lateFee,
-            status: 'paid',
+        } catch (error) {
+            Swal.fire({
+                title: 'Error',
+                text: 'Failed to fetch bills',
+                icon: 'error'
+            });
         }
-        await axios.put(`/api/bills/${selectedBill?.id}`, payload);
+    };
+
+    useEffect(() => {
         fetchData();
-        setIsOpen(false);
-        setSelectedBill(null); 
+    }, []);
 
-    //     Swal.fire({
-    //     icon: "เพิ่มรายการสำเร็จ",
-    //     title: "Bill saved successfully",
-    //     showConfirmButton: false,
-    //     timer: 1500,
-    //   });
+    const handLeReceivePayment = async (bill: Bill) => {
+        setSelectedBill(bill);
+        setLateFee(0);
+        setPaymentDate(new Date().toISOString().split('T')[0]);
+        setIsOpen(true);
+    };
 
-    Swal.fire({
-    icon: 'success',
-    title: 'สำเร็จ',
-    text: 'บันทึกการชำระเงินเรียบร้อย',
-    confirmButtonText: 'OK',
-    confirmButtonColor: '#6C63FF',
-    allowOutsideClick: false,
-    allowEscapeKey: false,
-    width: 500
-});
-       
+    const handLeSubmitPayment = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        if (!selectedBill) return;
+
+        try {
+            const payload = {
+                billId: selectedBill.id,
+                paymentDate: paymentDate,
+                lateFee: lateFee,
+                status: 'paid',
+            }
+            await axios.put(`/api/bills/${selectedBill?.id}`, payload);
+            fetchData();
+            setIsOpen(false);
+            setSelectedBill(null);
+
+            //     Swal.fire({
+            //     icon: "เพิ่มรายการสำเร็จ",
+            //     title: "Bill saved successfully",
+            //     showConfirmButton: false,
+            //     timer: 1500,
+            //   });
+
+            Swal.fire({
+                icon: 'success',
+                title: 'สำเร็จ',
+                text: 'บันทึกการชำระเงินเรียบร้อย',
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#6C63FF',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                width: 500
+            });
+
 
         } catch (error) {
             Swal.fire({
@@ -115,60 +115,60 @@ export default function BillsPage() {
                 icon: 'error'
             });
         }
-   };
-        const getStatusColor = (status: string) => {
-            switch (status) {
-                case 'paid':
-                    return 'text-green-600 bg-green-100';
-                case 'pending':
-                    return 'text-yellow-600 bg-yellow-100';
-                case 'overdue':
-                    return 'text-red-600 bg-red-100';
-                default:
-                    return 'text-gray-600 bg-gray-100';
-            }
-        };
+    };
+    const getStatusColor = (status: string) => {
+        switch (status) {
+            case 'paid':
+                return 'text-green-600 bg-green-100';
+            case 'pending':
+                return 'text-yellow-600 bg-yellow-100';
+            case 'overdue':
+                return 'text-red-600 bg-red-100';
+            default:
+                return 'text-gray-600 bg-gray-100';
+        }
+    };
 
-        const getStatusText = (status: string) => {
-            switch (status) {
-                case 'paid':
-                    return 'ชำระแล้ว';
-                case 'pending':
-                    return 'รอชำระ';
-                case 'overdue':
-                    return 'เกินกำหนด';
-                default:
-                    return 'status';
-            }
-        };
+    const getStatusText = (status: string) => {
+        switch (status) {
+            case 'paid':
+                return 'ชำระแล้ว';
+            case 'pending':
+                return 'รอชำระ';
+            case 'overdue':
+                return 'เกินกำหนด';
+            default:
+                return 'status';
+        }
+    };
 
 
-        const formateDate = (dateString : string) => {
-            return new Date(dateString).toLocaleDateString('th-TH', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric',
-            });
-        };
-   
-  return (
-    <div>
-      <h1 className='text-2xl font-semibold'>
-        <i className="fa-solid fa-file-invoice w-7"></i>
-        รายการบิล/ใบเสร็จ
-        </h1>
+    const formateDate = (dateString: string) => {
+        return new Date(dateString).toLocaleDateString('th-TH', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+        });
+    };
 
-        <table className="table mt-3">
-            <thead>
-                <tr>
-                    <th className="text-left">ห้อง</th>
-                    <th className="text-left">ลูกค้า</th>
-                    <th className="text-left">วันที่</th>
-                    <th className="text-right">ยอดเงิน</th>
-                    <th className="text-center">สถานะ</th>
-                    <th className="text-center w-[1ุุ30px]">การดำเนินการ</th>
-                </tr>
-            </thead>
+    return (
+        <div>
+            <h1 className='text-2xl font-semibold'>
+                <i className="fa-solid fa-file-invoice w-7"></i>
+                รายการบิล/ใบเสร็จ
+            </h1>
+
+            <table className="table mt-3">
+                <thead>
+                    <tr>
+                        <th className="text-left">ห้อง</th>
+                        <th className="text-left">ลูกค้า</th>
+                        <th className="text-left">วันที่</th>
+                        <th className="text-right">ยอดเงิน</th>
+                        <th className="text-center">สถานะ</th>
+                        <th className="text-center w-[1ุุ30px]">การดำเนินการ</th>
+                    </tr>
+                </thead>
                 <tbody>
 
                     {bills.map((bill) => (
@@ -182,7 +182,7 @@ export default function BillsPage() {
                             </td>
                             <td className="text-center">
                                 <Button onClick={() => handLeReceivePayment(bill)}
-                                className="bg-green-600 hover:bg-green-700">
+                                    className="bg-green-600 hover:bg-green-700">
                                     <i className="fa fa-money-bill mr-2"></i>
                                     รับชำระเงิน
                                 </Button>
@@ -191,64 +191,64 @@ export default function BillsPage() {
                     ))}
 
                 </tbody>
-        </table>
+            </table>
 
-        {/* เมื่อทำการ click ปุ่มรับชำระเงิน จะมี Popup ขึ้นมา */}
-        <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} title="รับชำระเงิน">
-            <form onSubmit={handLeSubmitPayment}>
-                <div className="mb-4">
-                    <label htmlFor="billInfo" className="block text-sm font-medium mb-2">ข้อมูลบิล</label>
-                    <div className="bg-gray-100 p-3 rounded">
-                        <p><strong>ห้อง:</strong> {selectedBill?.room.name}</p>
-                        <p><strong>ผู้เช่า</strong> {selectedBill?.booking.customerName}</p>
-                        <p><strong>ยอดเงิน</strong> {selectedBill?.totalAmount.toLocaleString('th-TH',{
-                            minimumFractionDigits:2,
-                            maximumFractionDigits:2
-                        })} บาท</p>
+            {/* เมื่อทำการ click ปุ่มรับชำระเงิน จะมี Popup ขึ้นมา */}
+            <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} title="รับชำระเงิน">
+                <form onSubmit={handLeSubmitPayment}>
+                    <div className="mb-4">
+                        <label htmlFor="billInfo" className="block text-sm font-medium mb-2">ข้อมูลบิล</label>
+                        <div className="bg-gray-100 p-3 rounded">
+                            <p><strong>ห้อง:</strong> {selectedBill?.room.name}</p>
+                            <p><strong>ผู้เช่า</strong> {selectedBill?.booking.customerName}</p>
+                            <p><strong>ยอดเงิน</strong> {selectedBill?.totalAmount.toLocaleString('th-TH', {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2
+                            })} บาท</p>
+                        </div>
                     </div>
-                </div>
-                <div className="mb-4">
-                    <label htmlFor="paymentDate" className="block text-sm font-medium mb-2">
-                        วันที่ได้เงิน
-                    </label>
-                    <input
-                        type="date"
-                        id="paymentDate"
-                        value={paymentDate}
-                        onChange={(e) => setPaymentDate(e.target.value)}
-                        className="input-modal w-full"
-                        required
-                    />
-                </div>
+                    <div className="mb-4">
+                        <label htmlFor="paymentDate" className="block text-sm font-medium mb-2">
+                            วันที่ได้เงิน
+                        </label>
+                        <input
+                            type="date"
+                            id="paymentDate"
+                            value={paymentDate}
+                            onChange={(e) => setPaymentDate(e.target.value)}
+                            className="input-modal w-full"
+                            required
+                        />
+                    </div>
 
-                <div className="mb-4">
-                    <label htmlFor="lateFee" className="block text-sm font-medium mb-2">
-                        ค่าปรับ(ถ้ามี)
-                    </label>
-                    <input
-                        type="number"
-                        id="lateFee"
-                        value={lateFee}
-                        onChange={(e) => setLateFee(Number(e.target.value))}
-                        className="input-modal w-full"
-                    />
-                </div>
-                <div className="flex gap-2">
-                    <Button type="submit" className="btn btn-primary">
-                        <i className="fa fa-check mr-2"></i>
-                        บันทึกการชำระเงิน
-                    </Button>
-                    <Button
-                        className="bg-red-600 text-white"
-                        type="button"
-                        variant="secondary"
-                        onClick={() => setIsOpen(false)}
-                    >
-                        ยกเลิก
-                    </Button>
-                </div>
-            </form>
-        </Modal>       
-    </div>    
-  );
+                    <div className="mb-4">
+                        <label htmlFor="lateFee" className="block text-sm font-medium mb-2">
+                            ค่าปรับ(ถ้ามี)
+                        </label>
+                        <input
+                            type="number"
+                            id="lateFee"
+                            value={lateFee}
+                            onChange={(e) => setLateFee(Number(e.target.value))}
+                            className="input-modal w-full"
+                        />
+                    </div>
+                    <div className="flex gap-2">
+                        <Button type="submit" className="btn btn-primary">
+                            <i className="fa fa-check mr-2"></i>
+                            บันทึกการชำระเงิน
+                        </Button>
+                        <Button
+                            className="bg-red-600 text-white"
+                            type="button"
+                            variant="secondary"
+                            onClick={() => setIsOpen(false)}
+                        >
+                            ยกเลิก
+                        </Button>
+                    </div>
+                </form>
+            </Modal>
+        </div>
+    );
 }

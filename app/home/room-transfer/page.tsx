@@ -8,7 +8,7 @@ import Swal from "sweetalert2";
 import Modal from "@/components/ui/modal";
 import { RoomInterface } from "@/interface/RoomInterface";
 import RoomTypeInterface from "@/interface/RoomTypeInterface";
-import { RoomTransferInterface } from "@/interface/RoomTransferInteface";
+import { RoomTransferInterface } from "@/interface/RoomTransferInterface";
 
 export default function RoomTransferPage() {
   const [isOpen, setIsOpen] = useState(false);
