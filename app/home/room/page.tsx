@@ -246,7 +246,7 @@ export default function Room() {
                         ${room.statusEmpty == 'no' ? 'bg-red-100' : 'bg-green-100'}
                         `}>
 
-                        <div className="text-xl font-semibold"> 
+                        <div className="text-xl font-semibold">
                             {room.name}
                             {room.statusEmpty === 'no' &&
                                 <Button className='px-4 py-2 rounded-full border border-gray-400 ms-4 mb-2'
