@@ -145,66 +145,66 @@ export default function Dashboard() {
             {/* KPI Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
                 {/* Total Rooms */}
-                <div className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition">
-                    <div className="flex items-center justify-between text-gray-500">
+                <div className="bg-blue-500 p-5 rounded-xl border border-white shadow-sm hover:shadow-md transition">
+                    <div className="flex items-center justify-between text-white">
                         <span className="text-sm font-medium">ห้องพักทั้งหมด</span>
-                        <div className="w-9 h-9 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center">
+                        <div className="w-9 h-9 bg-white text-blue-600 rounded-full flex items-center justify-center">
                             <i className="fa-solid fa-bed text-lg"></i>
                         </div>
                     </div>
-                    <div className="text-3xl font-bold text-gray-800 mt-2">
-                        {summary.totalRooms} <span className="text-xs font-normal text-gray-500">ห้อง</span>
+                    <div className="text-3xl font-bold text-white mt-2">
+                        {summary.totalRooms} <span className="text-xs font-normal text-white">ห้อง</span>
                     </div>
                 </div>
 
                 {/* Occupied Rooms */}
-                <div className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition">
-                    <div className="flex items-center justify-between text-gray-500">
+                <div className="bg-red-300 p-5 rounded-xl border border-white shadow-sm hover:shadow-md transition">
+                    <div className="flex items-center justify-between text-white">
                         <span className="text-sm font-medium">ห้องมีผู้เช่า</span>
                         <div className="w-9 h-9 bg-red-50 text-red-600 rounded-full flex items-center justify-center">
                             <i className="fa-solid fa-door-closed text-lg"></i>
                         </div>
                     </div>
-                    <div className="text-3xl font-bold text-gray-800 mt-2">
-                        {summary.occupiedRooms} <span className="text-xs font-normal text-gray-500">ห้อง</span>
+                    <div className="text-3xl font-bold text-white mt-2">
+                        {summary.occupiedRooms} <span className="text-xs font-normal text-white">ห้อง</span>
                     </div>
                 </div>
 
                 {/* Available / Empty Rooms */}
-                <div className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition">
-                    <div className="flex items-center justify-between text-gray-500">
+                <div className="bg-emerald-300 p-5 rounded-xl border border-white shadow-sm hover:shadow-md transition">
+                    <div className="flex items-center justify-between text-white">
                         <span className="text-sm font-medium">ห้องว่าง</span>
                         <div className="w-9 h-9 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center">
                             <i className="fa-solid fa-door-open text-lg"></i>
                         </div>
                     </div>
-                    <div className="text-3xl font-bold text-gray-800 mt-2">
-                        {summary.emptyRooms} <span className="text-xs font-normal text-gray-500">ห้อง</span>
+                    <div className="text-3xl font-bold text-white mt-2">
+                        {summary.emptyRooms} <span className="text-xs font-normal text-white">ห้อง</span>
                     </div>
                 </div>
 
                 {/* Total Guests */}
-                <div className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition">
-                    <div className="flex items-center justify-between text-gray-500">
+                <div className="bg-orange-300 p-5 rounded-xl border border-white shadow-sm hover:shadow-md transition">
+                    <div className="flex items-center justify-between text-white">
                         <span className="text-sm font-medium">ผู้เช่าปัจจุบัน</span>
                         <div className="w-9 h-9 bg-purple-50 text-purple-600 rounded-full flex items-center justify-center">
                             <i className="fa-solid fa-users text-lg"></i>
                         </div>
                     </div>
-                    <div className="text-3xl font-bold text-gray-800 mt-2">
-                        {summary.totalGuests} <span className="text-xs font-normal text-gray-500">คน</span>
+                    <div className="text-3xl font-bold text-white mt-2">
+                        {summary.totalGuests} <span className="text-xs font-normal text-white">คน</span>
                     </div>
                 </div>
 
                 {/* Total Revenue */}
-                <div className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition">
-                    <div className="flex items-center justify-between text-gray-500">
+                <div className="bg-yellow-100 p-5 rounded-xl border border-white shadow-sm hover:shadow-md transition">
+                    <div className="flex items-center justify-between text-black">
                         <span className="text-sm font-medium">รายได้รวม</span>
                         <div className="w-9 h-9 bg-amber-50 text-amber-600 rounded-full flex items-center justify-center">
                             <i className="fa-solid fa-baht-sign text-lg"></i>
                         </div>
                     </div>
-                    <div className="text-2xl font-bold text-gray-800 mt-2">
+                    <div className="text-2xl font-bold text-black mt-2">
                         {formatBaht(summary.totalRevenue)}
                     </div>
                 </div>
