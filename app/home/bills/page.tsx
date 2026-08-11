@@ -9,34 +9,32 @@ import Modal from "@/components/ui/modal";
 
 
 interface Bill {
-    id: String;
-    roomId: String;
-    bookingId: String;
-    billData: String;
-    totalAmount: Number;
-    waterUnit: Number;
-    electricityUnit: Number;
-    waterCost: Number;
-    electricityCost: Number;
-    roomPrice: Number;
+    id: string;
+    roomId: string;
+    bookingId: string;
+    billData: string;
+    totalAmount: number;
+    waterUnit: number;
+    electricityUnit: number;
+    waterCost: number;
+    electricityCost: number;
+    roomPrice: number;
     additionalCode: number;
-    status: String;
+    status: string;
     room: {
-        id: String;
-        name: String;
-
+        id: string;
+        name: string;
     },
     booking: {
-        id: String;
+        id: string;
         customerName: string;
     },
     billItems: {
-        id: String;
-        name: String;
+        id: string;
+        name: string;
         amount: number;
-        type: String;
+        type: string;
     }[],
-
 }
 
 export default function BillsPage() {
