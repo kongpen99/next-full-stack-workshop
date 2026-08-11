@@ -1,27 +1,78 @@
 'use client';
 
+// import { RoomInterface } from "@/interface/RoomInterface";
+// import { useParams } from "next/navigation";
+// import { useState, useEffect } from "react";
+// import { MoneyAddedInterface } from "@/interface/MoneyAddedInterface";
+
+// const currentMonth = new Date().toLocaleDateString('th-TH', { month: 'long', year: 'numeric' });
+
+// interface Apartment {
+//     id: string;
+//     name: string;
+//     address: string;
+//     phone: string;
+//     email: string;
+//     lineId: string;
+//     taxCode: string;
+// }
+
+// interface WaterAndElectricityPrice {
+//     id: string;
+//     waterPricePerUnit: number;
+//     electricityPricePerUnit: number;
+// }
+
 import { RoomInterface } from "@/interface/RoomInterface";
+
+import { useEffect, useState } from "react";
+
 import { useParams } from "next/navigation";
-import { useState, useEffect } from "react";
+
+import axios from "axios";
+
 import { MoneyAddedInterface } from "@/interface/MoneyAddedInterface";
 
-const currentMonth = new Date().toLocaleDateString('th-TH', { month: 'long', year: 'numeric' });
+const currentMonth = new Date().toLocaleDateString("th-TH", {
+
+    month: "long",
+
+    year: "numeric",
+
+});
 
 interface Apartment {
+
     id: string;
+
     name: string;
+
     address: string;
+
     phone: string;
+
     email: string;
+
     lineId: string;
+
     taxCode: string;
+
+    createdAt: string;
+
+    updatedAt: string;
+
 }
 
 interface WaterAndElectricityPrice {
+
     id: string;
+
     waterPricePerUnit: number;
+
     electricityPricePerUnit: number;
+
 }
+
 
 export default function ReceivePage() {
     const params = useParams();
@@ -259,15 +310,15 @@ export default function ReceivePage() {
                     </div>
                 </header>
 
-                    <section className="info">
-                        <div>
-                            <p><strong>ผู้เช่า:</strong> {room?.bookings[0]?.customerName}</p>
-                            <p><strong>ห้อง:</strong> {room?.name}</p>
-                        </div>
-                        <div>
-                            <p><strong>เดือน:</strong> {currentMonth}</p>
-                        </div>
-                    </section>
+                <section className="info">
+                    <div>
+                        <p><strong>ผู้เช่า:</strong> {room?.bookings[0]?.customerName}</p>
+                        <p><strong>ห้อง:</strong> {room?.name}</p>
+                    </div>
+                    <div>
+                        <p><strong>เดือน:</strong> {currentMonth}</p>
+                    </div>
+                </section>
 
                 <table className="table mt-3">
                     <thead>
